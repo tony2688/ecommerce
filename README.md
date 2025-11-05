@@ -1,5 +1,7 @@
 # E‑Commerce — v0.6
 
+> Rama por defecto: `main`. Todas las contribuciones deben entrar vía Pull Request a `main` con CI verde.
+
 Este repositorio contiene el backend FastAPI y utilitarios para correr validaciones locales. Cambios clave desde v0.4 a v0.6:
 
 - Canonicalizamos slashes en la API para evitar redirecciones 307 que pueden perder el header `Authorization`.
