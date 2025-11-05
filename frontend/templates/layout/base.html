@@ -9,6 +9,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ css_href | default('/static/scss/base.css') }}">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <meta name="description" content="E-Commerce AR — Compra simple, pagos con Mercado Pago, experiencia rápida y accesible.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="E-Commerce AR">
+    <meta property="og:description" content="Compra simple y segura con Mercado Pago.">
+    <meta property="og:url" content="/">
+    <meta property="og:image" content="/static/og-image.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="E-Commerce AR">
+    <meta name="twitter:description" content="Compra simple y segura con Mercado Pago.">
+    <meta name="twitter:image" content="/static/og-image.png">
     {% block head %}{% endblock %}
   </head>
   <body>

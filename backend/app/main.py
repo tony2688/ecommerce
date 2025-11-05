@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.settings import settings
 from app.api import api_router
+from app.errors import add_error_handlers
+from app.public_files import router as public_files_router
 from app.api.admin_ui import router as admin_ui_router
 from app.api.checkout_ui import router as checkout_ui_router
 from app.api.webhooks_mp import router as webhooks_mp_router
@@ -34,6 +36,9 @@ app = FastAPI(title="E-Commerce AR", debug=settings.APP_DEBUG)
 # Evitar redirects automáticos de slash (307) que pueden perder Authorization
 app.router.redirect_slashes = False
 
+# Registrar handlers de errores (404/500)
+add_error_handlers(app)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ALLOW_ORIGINS,
@@ -47,6 +52,7 @@ app.include_router(webhooks_mp_router)
 app.include_router(admin_ui_router)
 app.include_router(checkout_ui_router)
 app.include_router(public_router, tags=["public"])
+app.include_router(public_files_router)
 
 @app.get("/health")
 def health():
