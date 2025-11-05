@@ -1,6 +1,37 @@
-# E‑Commerce — v0.6
+# E‑Commerce — v0.9
 
 > Rama por defecto: `main`. Todas las contribuciones deben entrar vía Pull Request a `main` con CI verde.
+
+## Resumen v0.9 — Fase E (Frontend público)
+
+- Páginas públicas: `Home`, `About`, `Contact` (plantillas en `frontend/templates/public/` y páginas estáticas en `frontend/{index.html, about/index.html, contact/index.html}`).
+- Layout base con navbar accesible y footer pulido (tokens de color y spacing).
+- SCSS modular: componentes (`_hero.scss`, `_footer.scss`) y páginas (`_public.scss`) importados en `base.scss`.
+- Build SCSS correcto: genera `frontend/static/scss/base.css` y se sirve por Nginx en `http://localhost:8080/static/scss/base.css`.
+- QA UI (v0.9) ejecutado: lint y build OK; verificación visual en Home, About y Contact.
+- Accesibilidad: labels asociados (`for`/`id`), foco visible, placeholder regional `+54 381 123-4567` en teléfono.
+
+### Cómo levantar y navegar (Frontend)
+
+- `docker compose up -d` para levantar Nginx y servicios.
+- Navegar:
+  - `http://localhost:8080/` → Home
+  - `http://localhost:8080/about` → About
+  - `http://localhost:8080/contact` → Contact
+- Nota: usar puerto `8080`. `http://localhost/contact` (puerto 80) puede dar `ERR_CONNECTION_REFUSED` si no hay servidor en 80.
+
+### QA / Scripts útiles
+
+- `cd frontend`
+- `npm run lint:scss` — lint SCSS
+- `npm run scss:build` — compila `base.scss`
+- `npm run qa:ui` — flujo de QA rápido (lint + build)
+
+### CI / Tags
+
+- Workflow "UI Lint (SCSS)" configurado para correr en `push`/`pull_request` a `main`.
+- Tag publicado: `v0.9`.
+
 
 Este repositorio contiene el backend FastAPI y utilitarios para correr validaciones locales. Cambios clave desde v0.4 a v0.6:
 
