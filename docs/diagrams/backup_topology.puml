@@ -1,0 +1,22 @@
+@startuml
+title Topología de Backups — E-Commerce + Dashboard
+
+node "Prod Server (Ubuntu 24.04)" {
+  [FastAPI/API]
+  [Celery Worker]
+  database "MySQL 8.4.7" as DB
+  queue "Redis 7.4.6" as R
+  [Nginx]
+}
+
+folder "Backups (Primario)" as B1
+cloud "Offsite (Región Alterna)" as OFF
+
+DB -down-> B1 : Full Dump Diario (AES-256)
+DB -down-> B1 : Binlogs ≤15m (AES-256)
+R -down-> B1 : RDB Diario (AES-256)
+[Infra Configs] -down-> B1 : Tarball Semanal
+
+B1 -right-> OFF : Replicación Cifrada + Retención
+
+@enduml

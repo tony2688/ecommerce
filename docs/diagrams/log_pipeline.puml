@@ -1,0 +1,15 @@
+@startuml
+title Flujo de logs (JSON → Loki → Grafana)
+
+actor "Servicio API/Worker"
+rectangle "stdout (Docker logs)" as S
+rectangle "Promtail" as PT
+rectangle "Grafana Loki" as L
+rectangle "Grafana" as G
+
+"Servicio API/Worker" -> S : genera logs JSON estructurados
+S -> PT : lectura y etiquetado (container_name, service)
+PT -> L : push logs (HTTP API)
+L -> G : consulta de logs
+G -> "Usuario/DevOps" : visualiza y filtra por etiquetas
+@enduml

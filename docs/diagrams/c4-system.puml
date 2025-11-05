@@ -1,0 +1,42 @@
+@startuml
+' C4-PlantUML: System Context Diagram
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+
+title C4 — System Context: E-Commerce + Dashboard (AR / Mercado Pago)
+
+Person(buyer, "Comprador", "Navega el catálogo, compra productos, hace seguimiento de pedidos.")
+Person(admin, "Administrador", "Gestiona catálogo, inventario, pedidos, reseñas y reportes.")
+
+System_Boundary(sys, "Plataforma E-Commerce + Dashboard") {
+  System(web, "Frontend Web (Jinja + htmx)", "UI server-side (páginas públicas y dashboard).")
+  System(api, "API Backend (FastAPI)", "REST JSON, dominios DDD.")
+  System(worker, "Workers (Celery)", "Procesamiento asíncrono: emails, webhooks, conciliaciones, reservas de stock.")
+  SystemDb(db, "Base de Datos (MySQL 8.4.7)", "Transaccional, SQLAlchemy/Alembic.")
+  Queue(redis, "Redis 7.4.6", "Cola de tareas / cache / locks.")
+  System(proxy, "Nginx", "Reverse proxy / TLS / static.")
+}
+
+System_Ext(mp, "Mercado Pago", "Pagos, webhooks de eventos.")
+System_Ext(envia, "Courier / Envíos (ej. Envia.com)", "Etiquetas, tracking y costos.")
+System_Ext(smtp, "SMTP / Email Provider", "Correos transaccionales (confirmaciones, OTP, estados).")
+System_Ext(push, "Web Push Service", "Entrega de notificaciones push.")
+System_Ext(afip, "AFIP (Fase posterior)", "Facturación electrónica e informes fiscales.")
+
+Rel(buyer, web, "HTTPs", "Browser")
+Rel(admin, web, "HTTPs (login)", "Browser")
+Rel(web, api, "Llamados REST", "HTTPs/JSON")
+Rel(proxy, web, "Sirve UI y estáticos", "HTTPs")
+Rel(proxy, api, "Proxy de API", "HTTPs")
+Rel(api, db, "CRUD", "MySQL")
+Rel(api, redis, "Cache / Locks / Enqueue", "TCP")
+Rel(worker, redis, "Consume/Produce jobs", "TCP")
+Rel(api, mp, "Creación de pagos / consultas", "HTTPs/REST")
+Rel(mp, proxy, "Webhooks → /webhooks/mercadopago", "HTTPs")
+Rel(proxy, api, "Redirige webhook a API", "HTTPs")
+Rel(api, envia, "Cálculo de envíos / etiquetas", "HTTPs/REST")
+Rel(api, smtp, "Email transaccional", "SMTP/TLS")
+Rel(api, push, "Suscripciones / mensajes", "HTTPs")
+Rel(api, afip, "CAE / Comprobantes (futuro)", "HTTPs/REST")
+
+SHOW_LEGEND()
+@enduml

@@ -1,0 +1,121 @@
+.
+├── backend/
+│   ├── app/
+│   │   ├── core/                 # config, utils, http, idempotency (vacío)
+│   │   ├── common/               # tipos/constantes/placeholders compartidos (vacío)
+│   │   ├── auth/                 # dominio DDD auth (vacío)
+│   │   ├── catalog/              # dominio DDD catalog (vacío)
+│   │   ├── pricing/              # dominio DDD pricing (vacío)
+│   │   ├── inventory/            # dominio DDD inventory (vacío)
+│   │   ├── cart_checkout/        # dominio DDD cart_checkout (vacío)
+│   │   ├── orders/               # dominio DDD orders (vacío)
+│   │   ├── payments/             # dominio DDD payments (vacío)
+│   │   ├── shipping/             # dominio DDD shipping (vacío)
+│   │   ├── reviews/              # dominio DDD reviews (vacío)
+│   │   ├── notifications/        # dominio DDD notifications (vacío)
+│   │   ├── reporting/            # dominio DDD reporting (vacío)
+│   │   ├── api/                  # routers v1 (vacío)
+│   │   ├── schemas/              # pydantic (vacío)
+│   │   ├── db/                   # sqlalch, session, base (vacío)
+│   │   ├── workers/              # celery tasks (vacío)
+│   │   ├── events/               # outbox/inbox (vacío)
+│   │   └── main.py               # placeholder (sin código)
+│   ├── alembic/
+│   │   ├── versions/             # migraciones (vacío)
+│   │   └── env.py                # placeholder
+│   ├── tests/                    # pirámide de tests (vacío)
+│   ├── requirements.txt          # placeholder
+│   ├── pyproject.toml            # placeholder
+│   └── openapi_v1.yaml           # placeholder
+│
+├── frontend/
+│   ├── templates/                # Jinja (vacío)
+│   │   ├── public/
+│   │   ├── dashboard/
+│   │   └── _partials/
+│   ├── static/
+│   │   ├── scss/
+│   │   │   ├── _variables.scss   # placeholder paleta/tipografías
+│   │   │   ├── base/
+│   │   │   ├── layout/
+│   │   │   └── components/
+│   │   ├── js/
+│   │   │   ├── main.js           # placeholder
+│   │   │   ├── htmx.config.js    # placeholder
+│   │   │   └── alpine.init.js    # placeholder
+│   │   └── img/.gitkeep
+│   └── package.json              # placeholder
+│
+├── infra/
+│   ├── docker/
+│   │   ├── backend.Dockerfile    # placeholder
+│   │   ├── nginx.Dockerfile      # placeholder
+│   │   ├── celery.Dockerfile     # placeholder
+│   │   └── docker-compose.yml    # placeholder
+│   ├── nginx/
+│   │   └── nginx.conf            # placeholder
+│   └── ci/
+│       ├── github-actions.yml    # placeholder
+│       └── pre-commit-config.yaml # placeholder
+│
+├── ops/
+│   ├── scripts/                  # bash/py utilitarios (vacío)
+│   ├── backups/                  # políticas/cron (vacío)
+│   └── monitoring/               # dashboards/prom conf (vacío)
+│
+├── docs/
+│   ├── adr/
+│   │   ├── ADR-001-arquitectura-ddd.md        # skeleton (vacío)
+│   │   ├── ADR-002-idempotencia-sagas-outbox.md # skeleton (vacío)
+│   │   └── ADR-003-modelo-datos-erd.md        # skeleton (vacío)
+│   ├── rfc/
+│   │   ├── RFC-auth.md                        # skeleton (vacío)
+│   │   ├── RFC-payments-mercadopago.md        # skeleton (vacío)
+│   │   └── RFC-inventory-ledger.md            # skeleton (vacío)
+│   ├── diagrams/
+│   │   ├── c4-system.puml                     # placeholder
+│   │   └── c4-container.puml                  # placeholder
+│   └── READMES/
+│       ├── README-backend.md                  # skeleton (vacío)
+│       ├── README-frontend.md                 # skeleton (vacío)
+│       └── README-infra.md                    # skeleton (vacío)
+│
+├── .env.example                # placeholder (sin secretos)
+├── .gitignore                  # placeholder
+├── LICENSE                     # placeholder
+└── README.md                   # skeleton (vacío)
+
+Lista enumerada de archivos relevantes:
+
+1. backend/app/main.py - Punto de entrada principal de la aplicación FastAPI
+2. backend/alembic/env.py - Configuración de Alembic para migraciones de base de datos
+3. backend/requirements.txt - Dependencias del backend
+4. backend/pyproject.toml - Configuración del proyecto Python
+5. backend/openapi_v1.yaml - Especificación OpenAPI para la API
+6. frontend/static/scss/_variables.scss - Variables SCSS para paleta de colores y tipografías
+7. frontend/static/js/main.js - JavaScript principal para el frontend
+8. frontend/static/js/htmx.config.js - Configuración de htmx
+9. frontend/static/js/alpine.init.js - Inicialización de Alpine.js
+10. frontend/package.json - Dependencias del frontend
+11. infra/docker/backend.Dockerfile - Dockerfile para el backend
+12. infra/docker/nginx.Dockerfile - Dockerfile para Nginx
+13. infra/docker/celery.Dockerfile - Dockerfile para Celery
+14. infra/docker/docker-compose.yml - Configuración de Docker Compose
+15. infra/nginx/nginx.conf - Configuración de Nginx
+16. infra/ci/github-actions.yml - Configuración de GitHub Actions
+17. infra/ci/pre-commit-config.yaml - Configuración de pre-commit hooks
+18. docs/adr/ADR-001-arquitectura-ddd.md - Decisión arquitectónica sobre DDD
+19. docs/adr/ADR-002-idempotencia-sagas-outbox.md - Decisión sobre idempotencia y patrón outbox
+20. docs/adr/ADR-003-modelo-datos-erd.md - Modelo de datos y diagrama ERD
+21. docs/rfc/RFC-auth.md - Especificación para el sistema de autenticación
+22. docs/rfc/RFC-payments-mercadopago.md - Especificación para integración con Mercado Pago
+23. docs/rfc/RFC-inventory-ledger.md - Especificación para el sistema de inventario
+24. docs/diagrams/c4-system.puml - Diagrama C4 a nivel de sistema
+25. docs/diagrams/c4-container.puml - Diagrama C4 a nivel de contenedor
+26. docs/READMES/README-backend.md - Documentación del backend
+27. docs/READMES/README-frontend.md - Documentación del frontend
+28. docs/READMES/README-infra.md - Documentación de infraestructura
+29. .env.example - Ejemplo de variables de entorno
+30. .gitignore - Configuración de archivos ignorados por Git
+31. LICENSE - Licencia del proyecto
+32. README.md - Documentación principal del proyecto

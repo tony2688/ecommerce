@@ -1,0 +1,24 @@
+@startuml
+title Flujo de Observabilidad — E-Commerce + Dashboard
+
+actor Admin
+participant "FastAPI (API)" as API
+participant "Celery Worker" as W
+queue "Redis" as R
+database "MySQL" as DB
+rectangle "Prometheus" as P
+rectangle "Grafana" as G
+rectangle "Loki" as L
+rectangle "Tempo (Traces)" as T
+
+API -> P : /metrics scrape
+W -> P : /metrics scrape
+API -> T : Enviar trazas (OTLP)
+W -> T : Enviar trazas (OTLP)
+API -> L : stdout JSON logs
+W -> L : stdout JSON logs
+P -> G : Dashboards métricas
+L -> G : Logs estructurados
+T -> G : Trazas distribuidas
+Admin -> G : Visualiza dashboards y alertas
+@enduml

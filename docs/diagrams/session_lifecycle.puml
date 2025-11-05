@@ -1,0 +1,25 @@
+@startuml
+title Session Lifecycle — Create • Use • Revoke
+
+actor User
+participant "API (Auth)" as API
+database "DB" as DB
+queue "Redis (revoked)" as R
+
+== Create ==
+User -> API : /auth/login
+API -> DB : create auth_session
+API --> User : access+refresh
+
+== Use ==
+User -> API : /orders (Bearer access)
+API -> API : validate JWT (exp/jti/role)
+API --> User : 200
+
+== Revoke ==
+User -> API : /auth/logout
+API -> DB : set session.revoked_at
+API -> R : blacklist refresh jti
+API --> User : 204
+
+@enduml

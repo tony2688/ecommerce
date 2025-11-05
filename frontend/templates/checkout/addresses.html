@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout · Direcciones</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@2.0.7"></script>
+    <script src="https://unpkg.com/alpinejs@3.15.1" defer></script>
+    <style>
+      body { font-family: Inter, system-ui, Arial; background:#F7F8FA; color:#111; }
+      h1, h2 { font-family: Poppins, Inter; }
+      .btn { background:#007AFF; color:#fff; padding:10px 16px; border:none; border-radius:8px; cursor:pointer; }
+      .btn[disabled] { opacity:.6; cursor:not-allowed; }
+      .card { background:#fff; border:1px solid #eee; border-radius:12px; padding:16px; margin-bottom:16px; }
+      .badge { display:inline-block; padding:2px 8px; border-radius:999px; background:#F7F8FA; border:1px solid #ddd; font-size:12px; }
+      .row { display:flex; gap:24px; }
+      .col { flex:1; }
+      .addr { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-top:1px dashed #eee; }
+      .addr:first-child { border-top:none; }
+      .muted { color:#666; font-size:12px; }
+    </style>
+  </head>
+  <body x-data="addressesPage()" x-init="init()">
+    <div class="container" style="max-width:960px;margin:24px auto;">
+      <h1>Direcciones</h1>
+      <p class="muted">Seleccioná envío y facturación para continuar.</p>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h2>Envío</h2>
+            <template x-for="a in shipping" :key="a.id">
+              <div class="addr">
+                <label>
+                  <input type="radio" name="shipping" :value="a.id" x-model="selected.shipping_id"> Seleccionar
+                </label>
+                <div>
+                  <div x-text="`${a.name} — ${a.street}, ${a.city}`"></div>
+                  <div class="muted" x-text="`${a.province}, ${a.zip_code}, ${a.country}`"></div>
+                </div>
+                <div>
+                  <span class="badge" x-show="a.is_default">Default</span>
+                </div>
+              </div>
+            </template>
+            <div style="margin-top:12px;display:flex;gap:8px;">
+              <button class="btn" @click="openNew('shipping')">Nueva</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h2>Facturación</h2>
+            <template x-for="a in billing" :key="a.id">
+              <div class="addr">
+                <label>
+                  <input type="radio" name="billing" :value="a.id" x-model="selected.billing_id"> Seleccionar
+                </label>
+                <div>
+                  <div x-text="`${a.name} — ${a.street}, ${a.city}`"></div>
+                  <div class="muted" x-text="`${a.province}, ${a.zip_code}, ${a.country}`"></div>
+                </div>
+                <div>
+                  <span class="badge" x-show="a.is_default">Default</span>
+                </div>
+              </div>
+            </template>
+            <div style="margin-top:12px;display:flex;gap:8px;">
+              <button class="btn" @click="openNew('billing')">Nueva</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:8px;">
+        <button class="btn" :disabled="!canContinue()" @click="submitSelection()">Continuar</button>
+        <button class="btn" :disabled="!canContinue()" style="background:#22C55E" @click="confirmStep()">Confirmar direcciones</button>
+      </div>
+
+      <template x-if="message">
+        <div class="card" style="margin-top:16px;">
+          <div x-text="message"></div>
+        </div>
+      </template>
+    </div>
+
+    <script>
+      function addressesPage() {
+        return {
+          orderNumber: new URLSearchParams(window.location.search).get('order') || '',
+          shipping: [],
+          billing: [],
+          selected: { shipping_id: null, billing_id: null },
+          message: '',
+          init() {
+            if (!this.orderNumber) return;
+            fetch(`/api/v1/checkout/${this.orderNumber}/addresses`, { headers: this.authHeaders() })
+              .then(r => r.json())
+              .then(d => {
+                this.shipping = d.shipping || [];
+                this.billing = d.billing || [];
+                this.selected.shipping_id = d.selected?.shipping_address_id || d.defaults?.shipping_id || null;
+                this.selected.billing_id = d.selected?.billing_address_id || d.defaults?.billing_id || null;
+              });
+          },
+          canContinue() {
+            return !!(this.selected.shipping_id && this.selected.billing_id);
+          },
+          submitSelection() {
+            fetch(`/api/v1/checkout/${this.orderNumber}/addresses/select`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', ...this.authHeaders() },
+              body: JSON.stringify({ shipping_address_id: this.selected.shipping_id, billing_address_id: this.selected.billing_id })
+            }).then(r => r.json()).then(d => { this.message = 'Selección guardada'; });
+          },
+          confirmStep() {
+            fetch(`/api/v1/checkout/${this.orderNumber}/addresses/confirm`, {
+              method: 'POST', headers: this.authHeaders()
+            }).then(r => r.json()).then(d => {
+              if (d && d.status === 'ok') {
+                this.message = 'Direcciones confirmadas. Redirigiendo a pago...';
+                // Crear preferencia de MP y redirigir al init_point
+                fetch(`/api/v1/payments/mp/preference`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', ...this.authHeaders() },
+                  body: JSON.stringify({ order_number: this.orderNumber })
+                }).then(r => r.json()).then(p => {
+                  const url = p.init_point || p.sandbox_init_point;
+                  if (url) { window.location.href = url; }
+                }).catch(() => {
+                  this.message = 'No se pudo iniciar el pago. Intentalo nuevamente.';
+                });
+              }
+            });
+          },
+          openNew(kind) {
+            const name = prompt('Nombre y apellido');
+            const street = prompt('Calle y número');
+            const city = prompt('Ciudad');
+            const province = prompt('Provincia');
+            const zip = prompt('Código postal');
+            const phone = prompt('Teléfono');
+            const payload = { kind, name, street, city, province, zip_code: zip, country: 'AR', phone };
+            fetch(`/api/v1/checkout/${this.orderNumber}/addresses/new`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json', ...this.authHeaders() }, body: JSON.stringify(payload)
+            }).then(r => r.json()).then(list => {
+              if (kind === 'shipping') this.shipping = list; else this.billing = list;
+            });
+          },
+          authHeaders() {
+            const token = localStorage.getItem('access_token');
+            return token ? { 'Authorization': `Bearer ${token}` } : {};
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

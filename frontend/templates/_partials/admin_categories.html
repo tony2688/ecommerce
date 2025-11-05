@@ -1,0 +1,13 @@
+<section>
+  <h3>Categorías top</h3>
+  <div class="actions">
+    <a id="export-categories" href="/api/v1/admin/exports/categories.csv?from={{ from }}&to={{ to }}" class="btn btn-sm">Exportar CSV</a>
+  </div>
+  <div id="categories-content"
+       hx-get="/api/v1/admin/snapshots/categories?from={{ from }}&to={{ to }}&limit={{ limit or 5 }}"
+       hx-trigger="load"
+       hx-target="#categories-content"
+       hx-swap="innerHTML">
+    <p>Cargando snapshots...</p>
+  </div>
+</section>

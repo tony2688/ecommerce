@@ -1,0 +1,37 @@
+@startuml
+title Modelo RBAC — E-Commerce + Dashboard
+
+actor "Administrador" as A
+actor "Manager" as M
+actor "Seller" as S
+actor "Buyer" as B
+
+rectangle "Sistema" {
+  usecase "Gestión Usuarios" as U
+  usecase "Gestión Catálogo" as C
+  usecase "Inventario" as I
+  usecase "Pedidos" as O
+  usecase "Pagos" as P
+  usecase "Reportes" as R
+}
+
+A --> U
+A --> C
+A --> I
+A --> O
+A --> P
+A --> R
+
+M --> C
+M --> I
+M --> O
+M --> R
+
+S --> C
+S --> I
+S --> O
+
+B --> O : crear/consultar
+B --> P : checkout
+
+@enduml

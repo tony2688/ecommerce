@@ -1,0 +1,42 @@
+@startuml
+' C4-PlantUML: Container Diagram
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title C4 — Container: E-Commerce + Dashboard
+
+Person(buyer, "Comprador")
+Person(admin, "Administrador")
+
+System_Boundary(sys, "Plataforma E-Commerce + Dashboard") {
+  Container(proxy, "Nginx", "Reverse Proxy", "TLS, routing, static.")
+  Container(web, "Frontend (Jinja + htmx)", "Python/Jinja", "Render server-side, views públicas y dashboard.")
+  Container(api, "API (FastAPI)", "Python 3.12", "REST JSON; dominios DDD; OpenAPI.")
+  Container(worker, "Workers (Celery)", "Python 3.12", "Jobs: emails, conciliación, reservas, webhooks diferidos.")
+  ContainerDb(db, "MySQL 8.4.7", "RDBMS", "Datos transaccionales.")
+  Container(queue, "Redis 7.4.6", "Cache/Queues", "Cola Celery, cache, rate limits.")
+}
+
+Container_Ext(mp, "Mercado Pago", "Payments API", "Pagos + Webhooks")
+Container_Ext(envia, "Courier API", "Shipping", "Envíos y etiquetas")
+Container_Ext(smtp, "SMTP", "Email", "Transaccional")
+Container_Ext(push, "Web Push", "Push Service", "Suscripciones/Entrega")
+Container_Ext(afip, "AFIP", "e-Invoicing", "Fase posterior")
+
+Rel(buyer, proxy, "HTTPs")
+Rel(admin, proxy, "HTTPs")
+Rel(proxy, web, "Serve / Render")
+Rel(proxy, api, "Proxy API")
+Rel(web, api, "REST JSON")
+Rel(api, db, "SQL")
+Rel(api, queue, "Enqueue/Cache")
+Rel(worker, queue, "Consume/Produce")
+Rel(api, mp, "Crear/consultar pagos")
+Rel(mp, proxy, "Webhooks → /webhooks/mercadopago")
+Rel(proxy, api, "Forward webhook")
+Rel(api, envia, "REST")
+Rel(api, smtp, "SMTP/TLS")
+Rel(api, push, "HTTPs")
+Rel(api, afip, "REST (futuro)")
+
+SHOW_LEGEND()
+@enduml

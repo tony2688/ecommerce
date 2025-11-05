@@ -1,0 +1,35 @@
+@startuml
+title Relaciones críticas — Órdenes, Pagos, Inventario
+
+entity "checkout_order" as O {
+  *id : BIGINT
+  status : ENUM
+  total : DECIMAL
+  user_id : FK
+}
+
+entity "payment_payment" as P {
+  *id : BIGINT
+  mp_payment_id : STRING
+  status : ENUM
+  order_id : FK
+}
+
+entity "inventory_stock" as S {
+  *id : BIGINT
+  variant_id : FK
+  qty : INT
+  reserved_qty : INT
+  version : INT
+}
+
+entity "outbox_event" as X {
+  *id : BIGINT
+  aggregate : STRING
+  status : ENUM
+}
+
+O ||--|| P : "1-1 relación"
+O ||--o{ S : "impacta reservas"
+P ||--o{ X : "publica eventos"
+@enduml

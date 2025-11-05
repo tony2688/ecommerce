@@ -1,0 +1,97 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.4.7
+    container_name: ecom_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command: ["mysqld", "--mysql-native-password=ON"]
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u${DB_USER} -p${DB_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4.6
+    container_name: ecom_redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: ecom_backend
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port ${APP_PORT}
+    ports:
+      - "8000:${APP_PORT}"
+
+  celery:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: ecom_celery
+    env_file: .env
+    depends_on:
+      - backend
+      - redis
+    volumes:
+      - ./backend:/app
+    command: bash -lc "celery -A app.workers.tasks worker --loglevel=INFO"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: ecom_frontend
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:1.28.0
+    container_name: ecom_nginx
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+      - frontend
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: ecom_celery_beat
+    env_file: .env
+    depends_on:
+      - redis
+    volumes:
+      - ./backend:/app
+    command: bash -lc "celery -A app.workers.tasks beat --loglevel=INFO --pidfile="
+
+volumes:
+  db_data:
+  redis_data:

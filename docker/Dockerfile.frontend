@@ -1,0 +1,2 @@
+FROM nginx:1.28.0
+# El contenido se monta por volumen desde ./frontend

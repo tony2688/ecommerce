@@ -1,0 +1,20 @@
+@startuml
+title Runbook de Restore — PITR y Desastre Total
+
+actor "Operador DevOps" as OP
+database "Store Offsite" as OFF
+database "MySQL Nuevo/Restore" as NEWDB
+node "API/Workers" as APP
+
+OP -> OFF : Seleccionar Full + Binlogs (timestamp T)
+OFF --> NEWDB : Restaurar Full
+OP -> NEWDB : Reproducir Binlogs hasta T (PITR)
+OP -> NEWDB : Validaciones (checksums, counts, alembic)
+OP -> APP : Apuntar servicios a NEWDB (swap DNS/env)
+APP --> OP : Healthcheck OK
+
+note right of NEWDB
+  Criterios: RPO ≤ 15m
+            RTO ≤ 1h
+end note
+@enduml

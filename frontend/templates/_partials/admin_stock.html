@@ -1,0 +1,25 @@
+<div class="p-4 bg-white border rounded shadow">
+  <h2 class="text-lg font-semibold mb-2">Stock — Low stock & Reservas</h2>
+  <div class="mb-2 text-sm">Reservas activas: <strong>{{ stock.reservations_active }}</strong></div>
+  <h3 class="text-md font-semibold mt-2 mb-2">Items con stock bajo</h3>
+  <table class="min-w-full text-sm">
+    <thead>
+      <tr>
+        <th class="text-left p-2 border-b">SKU</th>
+        <th class="text-left p-2 border-b">Nombre</th>
+        <th class="text-right p-2 border-b">Disponible</th>
+        <th class="text-right p-2 border-b">Threshold</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for it in stock.stock_low_items %}
+      <tr>
+        <td class="p-2 border-b">{{ it.sku }}</td>
+        <td class="p-2 border-b">{{ it.name }}</td>
+        <td class="p-2 border-b text-right">{{ it.available }}</td>
+        <td class="p-2 border-b text-right">{{ it.threshold }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

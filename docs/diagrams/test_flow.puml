@@ -1,0 +1,22 @@
+@startuml
+title Flujo de Validación — CI/CD (GitHub Actions)
+
+actor Developer
+participant "Pre-commit Hooks" as P
+participant "CI Runner" as CI
+participant "Docker Compose (Test Env)" as D
+participant "Reportes / Coverage" as R
+
+Developer -> P : Ejecuta linters / mypy / pytest local
+P -> CI : Push / PR
+CI -> D : Levanta entorno aislado (MySQL+Redis)
+D -> CI : Ejecuta pytest (unit + integration)
+CI -> CI : Genera reportes HTML / XML
+CI -> R : Subir cobertura a artefactos
+alt cobertura >= 90%
+  CI -> CI : Ejecuta contract / E2E (staging)
+  CI -> Developer : ✅ Merge habilitado
+else fallo
+  CI -> Developer : ❌ Falla PR + logs
+end
+@enduml

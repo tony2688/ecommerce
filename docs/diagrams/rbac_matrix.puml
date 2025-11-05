@@ -1,0 +1,40 @@
+@startuml
+title RBAC Matrix — Roles vs Permisos
+
+skinparam packageStyle rectangle
+package "Roles" {
+  class Admin
+  class Manager
+  class Seller
+  class Buyer
+}
+package "Permissions" {
+  class Catalog_read
+  class Catalog_write
+  class Inventory_adjust
+  class Orders_manage
+  class Payments_reconcile
+  class Reviews_moderate
+  class Reporting_view
+}
+
+Admin --> Catalog_read
+Admin --> Catalog_write
+Admin --> Inventory_adjust
+Admin --> Orders_manage
+Admin --> Payments_reconcile
+Admin --> Reviews_moderate
+Admin --> Reporting_view
+
+Manager --> Catalog_read
+Manager --> Catalog_write
+Manager --> Inventory_adjust
+Manager --> Orders_manage
+Manager --> Reporting_view
+
+Seller --> Catalog_read
+Seller --> Catalog_write
+Seller --> Orders_manage
+
+Buyer --> Catalog_read
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+title Quality Gates — Validaciones obligatorias
+
+node "Quality Gate" {
+  component "Linters\n(black, ruff, isort)" as L
+  component "Typecheck\n(mypy)" as T
+  component "Tests\n(pytest)" as U
+  component "Coverage >= 90%" as C
+  component "Security\n(bandit, safety)" as S
+}
+component "Build Docker" as B
+component "Deploy" as D
+
+L -down-> T
+T -down-> U
+U -down-> C
+C -down-> S
+S -down-> B
+B -down-> D
+
+note right of D
+  ❌ Si cualquier paso falla → pipeline aborta  
+  ✅ Solo pasa a Deploy si todos los gates = OK
+end note
+@enduml

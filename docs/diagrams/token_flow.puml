@@ -1,0 +1,25 @@
+@startuml
+title Token Flow — Login + Refresh Rotation
+
+actor User
+participant "Frontend (Jinja/htmx)" as FE
+participant "API (FastAPI)" as API
+database "DB" as DB
+queue "Redis (revoked/limits)" as R
+
+== Login ==
+User -> FE : email+password
+FE -> API : POST /auth/login
+API -> DB : verify user (bcrypt)
+DB --> API : ok
+API -> DB : create auth_session
+API -> R : store refresh jti (allow)
+API --> FE : Set-Cookie: access (HttpOnly, 15m)\nSet-Cookie: refresh (HttpOnly, 7d)\nSet-Cookie: csrf
+
+== Refresh Rotation ==
+FE -> API : POST /auth/refresh (send refresh)
+API -> R : check jti not revoked
+API -> API : issue new access+refresh\nrevoke old jti
+API -> R : blacklist old jti / set new
+API --> FE : new cookies (access, refresh)
+@enduml
