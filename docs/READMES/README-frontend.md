@@ -66,3 +66,34 @@ QA y pruebas manuales:
 No-Go’s:
 - No agregar endpoints ni lógica nueva de backend.
 - No usar hex ni `!important` en nuevos SCSS; solo tokens/mixins.
+
+## Fase F (v1.0) — Build automático SCSS + Deploy seguro
+
+Durante el build de Docker del frontend se compila automáticamente el SCSS y se aseguran los tipos MIME correctos en Nginx.
+
+### Build de imagen (multi-stage)
+
+- Se usa `node:20` para compilar SCSS y luego `nginx:1.28.0` para servir.
+- Comandos ejecutados en la etapa de build:
+  - `npm ci && npm run scss:build`
+- La imagen final copia `static/` y `index.html` a `/usr/share/nginx/html/`.
+- `nginx.conf` incluye `mime.types` para servir `text/css`.
+
+### Verificación rápida
+
+1. `docker compose build frontend nginx`
+2. `docker compose up -d`
+3. `curl -I http://localhost:8080/static/scss/base.css` → `Content-Type: text/css`
+4. `curl -I http://localhost:8080/` → `200 OK`
+
+### CI/CD
+
+- Workflow `Frontend Build SCSS` compila (`npm ci`, `npm run qa:ui`, `npm run scss:build`).
+- Levanta temporalmente `nginx:1.28.0` para validar el MIME del CSS con `curl -I`.
+
+### Definition of Done
+
+- Dockerfile compila SCSS automáticamente.
+- CI ejecuta lint + build.
+- Nginx sirve `.css` como `text/css`.
+- `/`, `/about`, `/contact` con estilos aplicados.

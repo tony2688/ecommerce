@@ -1,0 +1,44 @@
+name: Frontend Build SCSS
+
+on:
+  push:
+    paths:
+      - "frontend/**"
+      - "docker/Dockerfile.frontend"
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Node install + build + lint
+        run: |
+          cd frontend
+          npm ci
+          npm run qa:ui
+          npm run scss:build
+
+      - name: Serve static with Nginx for MIME validation
+        run: |
+          docker run -d --name ui-nginx -p 8080:80 \
+            -v "${{ github.workspace }}/frontend:/usr/share/nginx/html:ro" \
+            nginx:1.28.0
+          # Espera breve para que Nginx levante
+          sleep 3
+
+      - name: Validate CSS MIME
+        run: |
+          curl -I http://localhost:8080/static/scss/base.css | grep -q "Content-Type: text/css"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker rm -f ui-nginx || true

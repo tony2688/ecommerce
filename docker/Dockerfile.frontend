@@ -1,2 +1,16 @@
+# === Etapa 1: Build de SCSS ===
+FROM node:20 AS build
+WORKDIR /app
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run scss:build
+
+# === Etapa 2: Imagen Nginx final ===
 FROM nginx:1.28.0
-# El contenido se monta por volumen desde ./frontend
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+# Asegura incluir tipos MIME
+RUN sed -i '1i include /etc/nginx/mime.types;\n default_type application/octet-stream;' /etc/nginx/nginx.conf || true
+# Copia estáticos compilados
+COPY --from=build /app/static /usr/share/nginx/html/static
+COPY --from=build /app/index.html /usr/share/nginx/html/
