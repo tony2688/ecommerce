@@ -1,61 +1,36 @@
-import logging
-import os
-from pathlib import Path
-from time import time
-
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+import os
+from datetime import datetime
 
-logger = logging.getLogger(__name__)
+router = APIRouter()
 
-router = APIRouter(tags=["public"])
+# ✅ Ruta literal a las plantillas del frontend
+templates = Jinja2Templates(directory="frontend/templates")
 
+BUILD_HASH = os.getenv("BUILD_HASH") or datetime.utcnow().strftime("%Y%m%d%H%M%S")
 
-def _templates() -> Jinja2Templates:
-    """Return Jinja2Templates pointing to frontend/templates.
-
-    Works both in Docker (workdir /app) and local dev.
-    """
-    docker_tpl = Path("/app/frontend/templates")
-    if docker_tpl.exists():
-        return Jinja2Templates(directory=str(docker_tpl))
-    # Local dev: resolve project root from this file
-    here = Path(__file__).resolve()
-    root = here.parents[3]  # backend/app/api/v1/public.py → project root
-    tpl_dir = root / "frontend" / "templates"
-    return Jinja2Templates(directory=str(tpl_dir))
-
-
-BUILD_HASH = os.getenv("BUILD_HASH") or str(int(time()))
-
-
-def _css_href() -> str:
+def css_href() -> str:
     return f"/static/scss/base.css?v={BUILD_HASH}"
 
-
-@router.get("/", response_class=HTMLResponse)
-def home(request: Request):
-    templates = _templates()
+@router.get("/", response_class=HTMLResponse, tags=["public"])
+async def home(request: Request):
     return templates.TemplateResponse(
         "public/home.html",
-        {"request": request, "css_href": _css_href()},
+        {"request": request, "css_href": css_href(), "page_id": "home"},
     )
 
-
-@router.get("/about", response_class=HTMLResponse)
-def about(request: Request):
-    templates = _templates()
+@router.get("/about", response_class=HTMLResponse, tags=["public"])
+async def about(request: Request):
     return templates.TemplateResponse(
         "public/about.html",
-        {"request": request, "css_href": _css_href()},
+        {"request": request, "css_href": css_href(), "page_id": "about"},
     )
 
-
-@router.get("/contact", response_class=HTMLResponse)
-def contact(request: Request):
-    templates = _templates()
+@router.get("/contact", response_class=HTMLResponse, tags=["public"])
+async def contact(request: Request):
     return templates.TemplateResponse(
         "public/contact.html",
-        {"request": request, "css_href": _css_href()},
+        {"request": request, "css_href": css_href(), "page_id": "contact"},
     )
