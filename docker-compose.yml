@@ -41,6 +41,8 @@ services:
         condition: service_started
     volumes:
       - ./backend:/app
+      # Exponer plantillas de UI al backend para Jinja
+      - ./frontend/templates:/app/frontend/templates:ro
     command: uvicorn app.main:app --host 0.0.0.0 --port ${APP_PORT}
     ports:
       - "8000:${APP_PORT}"

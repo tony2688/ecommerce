@@ -1,0 +1,48 @@
+// v0.8 — Utilities (Phase B)
+@use 'tokens' as t;
+@use 'mixins' as m;
+@use 'sass:map';
+
+.visually-hidden,
+.sr-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important; /* stylelint-disable-line declaration-no-important */
+  white-space: nowrap;
+  width: 1px;
+}
+
+.u-truncate { @include m.truncate; }
+.u-flex-center { @include m.flex-center; }
+
+.badge {
+  background: t.$color-bg-muted;
+  border: 1px solid t.$color-border;
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px map.get(t.$space, 2);
+}
+
+.container {
+  margin: map.get(t.$space, 6) auto;
+  max-width: 960px;
+}
+
+.row {
+  display: flex;
+  gap: map.get(t.$space, 5);
+}
+
+.col {
+  flex: 1;
+}
+
+.muted {
+  color: t.$color-text-muted;
+  font-size: 12px;
+}

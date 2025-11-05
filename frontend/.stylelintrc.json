@@ -1,0 +1,25 @@
+{
+  "extends": ["stylelint-config-standard-scss"],
+  "plugins": ["stylelint-order"],
+  "rules": {
+    "color-no-hex": true,
+    "property-no-vendor-prefix": null,
+    "font-family-no-missing-generic-family-keyword": null,
+    "no-empty-source": null,
+
+    "order/properties-alphabetical-order": true,
+
+    "selector-class-pattern": [
+      "^[a-z0-9\\-]+$",
+      {
+        "resolveNestedSelectors": true,
+        "message": "Usá kebab-case y nombres claros."
+      }
+    ],
+
+    "scss/at-use-no-unnamespaced": null,
+    "scss/double-slash-comment-empty-line-before": null,
+
+    "declaration-no-important": true
+  }
+}

@@ -1,0 +1,21 @@
+// v0.8 — Tables (Phase C)
+@use '../_tokens' as t;
+@use 'sass:map';
+
+.table {
+  background: t.$color-bg;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid t.$color-border;
+  padding: map.get(t.$space, 3);
+  text-align: left;
+}
+
+.table th {
+  color: t.$color-text-muted;
+  font-weight: 600;
+}

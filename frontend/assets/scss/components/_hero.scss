@@ -1,0 +1,29 @@
+// v0.9 — Hero (Fase E)
+@use '../_tokens' as t;
+@use 'sass:map';
+
+.hero {
+  padding: map.get(t.$space, 6) 0;
+}
+
+.hero-title {
+  font-family: t.$font-titles;
+  font-weight: 600;
+  margin-bottom: map.get(t.$space, 3);
+}
+
+.hero-subtitle {
+  color: t.$color-text-muted;
+  margin-bottom: map.get(t.$space, 5);
+}
+
+.hero-actions {
+  display: flex;
+  gap: map.get(t.$space, 3);
+}
+
+@media (min-width: map.get(t.$breakpoints, md)) {
+  .hero {
+    padding: map.get(t.$space, 8) 0;
+  }
+}

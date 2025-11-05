@@ -1,0 +1,65 @@
+// v0.8 — Mixins (Phase B)
+@use 'sass:map';
+@use 'tokens' as t;
+
+// Button variants config using tokens only
+$btn-variants: (
+  primary: (bg: t.$color-primary, hover: t.$color-primary-hover, text: t.$color-bg),
+  secondary: (bg: t.$color-secondary, hover: t.$color-secondary, text: t.$color-bg),
+  success: (bg: t.$color-success, hover: t.$color-success, text: t.$color-bg),
+  warning: (bg: t.$color-warning, hover: t.$color-warning, text: t.$color-text),
+  error: (bg: t.$color-error, hover: t.$color-error, text: t.$color-bg),
+  neutral: (bg: t.$color-bg-muted, hover: t.$color-bg, text: t.$color-text)
+);
+
+// Button mixin
+@mixin btn($variant, $gap-key: 3) {
+  $conf: map.get($btn-variants, $variant);
+  
+  background-color: map.get($conf, bg);
+  border: none;
+  border-radius: t.$radius-md;
+  color: map.get($conf, text);
+  cursor: pointer;
+  display: inline-block;
+  font-family: t.$font-ui;
+  font-weight: 600;
+  padding: map.get(t.$space, $gap-key) map.get(t.$space, $gap-key + 1);
+  text-decoration: none;
+
+  &:hover {
+    background-color: map.get($conf, hover);
+    filter: brightness(0.98);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// Card mixin (elevation + radius)
+@mixin card($elevation: 1, $radius: t.$radius-md) {
+  background-color: t.$color-bg;
+  border-radius: $radius;
+  box-shadow: map.get(t.$elevations, $elevation);
+}
+
+// Truncate single-line
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Flex center utility
+@mixin flex-center {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+// Grid gap helper using spacing scale
+@mixin grid-gap($gap-key: 4) {
+  gap: map.get(t.$space, $gap-key);
+}

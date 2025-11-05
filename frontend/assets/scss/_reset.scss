@@ -1,0 +1,40 @@
+// v0.8 — Reset (Phase B)
+@use 'sass:map';
+@use 'tokens' as t;
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: t.$color-bg;
+  color: t.$color-text;
+  font-family: t.$font-ui;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: t.$font-titles;
+  margin: 0 0 map.get(t.$space, 4);
+}
+
+p {
+  margin: 0 0 map.get(t.$space, 4);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button { font-family: inherit; }

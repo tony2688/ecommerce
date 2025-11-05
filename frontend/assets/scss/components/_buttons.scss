@@ -1,0 +1,15 @@
+// v0.8 — Buttons (Phase C)
+@use '../_mixins' as m;
+@use '../_tokens' as t;
+@use 'sass:map';
+
+.btn { @include m.btn(primary); }
+.btn.btn-secondary { @include m.btn(secondary); }
+.btn.btn-success { @include m.btn(success); }
+.btn.btn-warning { @include m.btn(warning); }
+.btn.btn-error { @include m.btn(error); }
+
+.btn.btn-sm {
+  font-size: 0.875rem;
+  padding: map.get(t.$space, 2) map.get(t.$space, 3);
+}

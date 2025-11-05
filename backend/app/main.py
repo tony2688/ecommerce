@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import settings
 from app.api import api_router
 from app.api.admin_ui import router as admin_ui_router
+from app.api.checkout_ui import router as checkout_ui_router
 from app.api.webhooks_mp import router as webhooks_mp_router
 """
 Ensure all SQLAlchemy models are imported at startup so that string-based
@@ -42,6 +43,7 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api")
 app.include_router(webhooks_mp_router)
 app.include_router(admin_ui_router)
+app.include_router(checkout_ui_router)
 
 @app.get("/health")
 def health():

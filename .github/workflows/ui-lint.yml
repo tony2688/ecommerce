@@ -1,0 +1,32 @@
+name: UI Lint (SCSS)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  stylelint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        working-directory: frontend
+        run: |
+          npm ci || npm install
+
+      - name: Run SCSS lint
+        working-directory: frontend
+        run: npm run lint:scss
+
+      - name: Build SCSS (sanity)
+        working-directory: frontend
+        run: npm run scss:build

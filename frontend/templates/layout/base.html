@@ -1,41 +1,35 @@
 <!DOCTYPE html>
+{# v0.8 — Layout base placeholder (Phase A). Full layout in Phase C. #}
 <html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home — E‑Commerce</title>
+    <title>{% block title %}E‑Commerce{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/scss/base.css">
+    {% block head %}{% endblock %}
   </head>
   <body>
     <header class="site-header" role="banner">
       <div class="container">
         <div class="brand">E‑Commerce</div>
         <nav class="nav" role="navigation" aria-label="primary">
-          <a href="/" class="nav-link is-active">Home</a>
+          <a href="/" class="nav-link">Home</a>
           <a href="/about" class="nav-link">About</a>
           <a href="/contact" class="nav-link">Contact</a>
         </nav>
       </div>
     </header>
     <main class="site-content container">
-      <section class="page-home">
-        <div class="hero">
-          <h1 class="hero-title">Bienvenido a E‑Commerce AR</h1>
-          <p class="hero-subtitle">Productos, ofertas y una experiencia simple y accesible.</p>
-          <div class="hero-actions">
-            <a href="/contact" class="btn">Contáctanos</a>
-            <a href="/about" class="btn btn-secondary">Sobre nosotros</a>
-          </div>
-        </div>
-      </section>
+      {% block content %}{% endblock %}
     </main>
     <footer class="site-footer" role="contentinfo">
       <div class="container">
         <p class="site-footer-text">© 2025 E‑Commerce AR</p>
       </div>
     </footer>
+    {% block scripts %}{% endblock %}
   </body>
 </html>

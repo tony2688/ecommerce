@@ -1,0 +1,33 @@
+// v0.9 — Páginas públicas (Fase E)
+@use '../_tokens' as t;
+@use '../_mixins' as m;
+@use 'sass:map';
+
+.page-home { margin-bottom: map.get(t.$space, 6); }
+.page-about { margin-bottom: map.get(t.$space, 6); }
+.page-contact { margin-bottom: map.get(t.$space, 6); }
+
+.contact-form {
+  display: grid;
+  gap: map.get(t.$space, 4);
+  grid-template-columns: 1fr;
+}
+
+.form-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: map.get(t.$space, 2);
+}
+
+.form-field input,
+.form-field textarea {
+  border: 1px solid t.$color-border;
+  border-radius: t.$radius-md;
+  padding: map.get(t.$space, 3);
+}
+
+.form-actions {
+  align-items: center;
+  display: flex;
+  gap: map.get(t.$space, 3);
+}

@@ -1,0 +1,33 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Home — E‑Commerce{% endblock %}
+
+{% block content %}
+  <section class="page-home">
+    <div class="hero">
+      <h1 class="hero-title">Bienvenido a E‑Commerce AR</h1>
+      <p class="hero-subtitle">Productos, ofertas y una experiencia simple y accesible.</p>
+      <div class="hero-actions">
+        <a href="/contact" class="btn">Contáctanos</a>
+        <a href="/about" class="btn btn-secondary">Sobre nosotros</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h2>Compras seguras</h2>
+            <p>Pagos confiables y seguimiento de pedidos.</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h2>Atención cercana</h2>
+            <p>Soporte con foco en tu necesidad.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

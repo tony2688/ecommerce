@@ -1,0 +1,11 @@
+// v0.8 — Cards (Phase C)
+@use '../_mixins' as m;
+@use '../_tokens' as t;
+@use 'sass:map';
+
+.card {
+  @include m.card(1, t.$radius-lg);
+  
+  margin-bottom: map.get(t.$space, 4);
+  padding: map.get(t.$space, 4);
+}

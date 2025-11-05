@@ -1,0 +1,18 @@
+// v0.9 — Footer (Fase E)
+@use '../_tokens' as t;
+@use 'sass:map';
+
+.site-footer {
+  background: t.$color-bg-muted;
+  border-top: 1px solid t.$color-border;
+  margin-top: map.get(t.$space, 8);
+}
+
+.site-footer .container {
+  padding: map.get(t.$space, 5) 0;
+}
+
+.site-footer-text {
+  color: t.$color-text-muted;
+  font-size: 14px;
+}

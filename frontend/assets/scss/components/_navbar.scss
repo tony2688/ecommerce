@@ -1,0 +1,40 @@
+// v0.8 — Navbar (Phase C)
+@use '../_tokens' as t;
+@use 'sass:map';
+
+.site-header {
+  background: t.$color-bg;
+  border-bottom: 1px solid t.$color-border;
+  position: sticky;
+  top: 0;
+  z-index: map.get(t.$z-index, nav);
+}
+
+.site-header .container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: map.get(t.$space, 4) 0;
+}
+
+.brand {
+  font-family: t.$font-titles;
+  font-weight: 600;
+}
+
+.nav {
+  display: flex;
+  gap: map.get(t.$space, 4);
+}
+.nav-link { color: t.$color-text; }
+
+.nav-link:hover,
+.nav-link:focus {
+  color: t.$color-primary-hover;
+  outline: none;
+}
+
+.nav-link.is-active {
+  color: t.$color-primary;
+  font-weight: 600;
+}

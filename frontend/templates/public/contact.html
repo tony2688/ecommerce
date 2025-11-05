@@ -1,0 +1,39 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Contact — E‑Commerce{% endblock %}
+
+{% block content %}
+  <section class="page-contact container" aria-labelledby="contact-title">
+    <h1 id="contact-title">Contacto</h1>
+    <p>Formulario dummy (no envía). Todos los campos son accesibles.</p>
+
+    <form class="contact-form" aria-describedby="contact-hint">
+      <p id="contact-hint" class="muted">Usa el placeholder regional de Tucumán en teléfono.</p>
+
+      <div class="form-field">
+        <label for="name">Nombre</label>
+        <input id="name" name="name" type="text" aria-invalid="false" placeholder="Tu nombre" />
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" aria-invalid="false" placeholder="tucorreo@ejemplo.com" />
+      </div>
+
+      <div class="form-field">
+        <label for="phone">Teléfono</label>
+        <input id="phone" name="phone" type="tel" aria-invalid="false" placeholder="+54 381 123-4567" />
+      </div>
+
+      <div class="form-field">
+        <label for="message">Mensaje</label>
+        <textarea id="message" name="message" rows="4" aria-invalid="false" placeholder="¿En qué podemos ayudarte?"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn">Enviar</button>
+        <span class="muted" aria-live="polite">Demo: no se envía información.</span>
+      </div>
+    </form>
+  </section>
+{% endblock %}
