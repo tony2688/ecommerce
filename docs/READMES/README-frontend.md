@@ -97,3 +97,45 @@ Durante el build de Docker del frontend se compila automáticamente el SCSS y se
 - CI ejecuta lint + build.
 - Nginx sirve `.css` como `text/css`.
 - `/`, `/about`, `/contact` con estilos aplicados.
+
+## Fase G (v1.1) — Públicas vía backend + Cache busting + Headers
+
+Objetivo: Servir Home/About/Contact desde FastAPI + Jinja, mantener estáticos en `/static/` por Nginx, sumar cache busting y headers de seguridad.
+
+### Rutas públicas (FastAPI + Jinja)
+
+- Nuevas rutas en backend: `GET /`, `GET /about`, `GET /contact` → `TemplateResponse("public/<page>.html", {...})`.
+- Se monta `/static` en FastAPI sólo si el directorio existe (dev/Docker), pero en producción los estáticos se sirven por Nginx.
+
+### Cache busting CSS
+
+- En `frontend/templates/layout/base.html` el `<link>` usa `{{ css_href }}`.
+- El backend pasa `{"css_href": "/static/scss/base.css?v=<BUILD_HASH>"}` con `BUILD_HASH` desde env o timestamp.
+
+### Headers de seguridad y caché en Nginx
+
+- Seguridad:
+  - `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`.
+  - `Permissions-Policy: geolocation=(), microphone=(), camera=()`.
+  - CSP mínima: `default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; script-src 'self'`.
+- Caché estáticos:
+  - `location /static/ { alias /usr/share/nginx/html/static/; expires 30d; add_header Cache-Control "public, max-age=2592000, immutable"; }`.
+- Públicas vía backend:
+  - `location = /`, `location = /about`, `location = /contact` → `proxy_pass` al backend.
+
+### CI — UI Smoke
+
+- Workflow `UI Smoke` compila SCSS y levanta:
+  - Backend con `uvicorn` en `:8000`.
+  - Nginx en `:8080` apuntando al backend (Actions usa `host.docker.internal`).
+- Checks:
+  - Home `curl -sSf http://localhost:8080/` → 200.
+  - CSS `curl -I http://localhost:8080/static/scss/base.css` contiene `Content-Type: text/css`.
+
+### Definition of Done
+
+- `/`, `/about`, `/contact` servidos por backend (TemplateResponse).
+- CSS con cache busting `?v=`.
+- Nginx con MIME + headers de seguridad + caché en `/static/`.
+- CI UI Smoke en verde: Home 200 + CSS `text/css`.
+- README actualizado.

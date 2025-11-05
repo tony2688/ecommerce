@@ -1,10 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
+from pathlib import Path
 from app.core.settings import settings
 from app.api import api_router
 from app.api.admin_ui import router as admin_ui_router
 from app.api.checkout_ui import router as checkout_ui_router
 from app.api.webhooks_mp import router as webhooks_mp_router
+from app.api.v1.public import router as public_router
 """
 Ensure all SQLAlchemy models are imported at startup so that string-based
 relationship targets (e.g., relationship("Shipment")) resolve correctly when
@@ -44,8 +47,22 @@ app.include_router(api_router, prefix="/api")
 app.include_router(webhooks_mp_router)
 app.include_router(admin_ui_router)
 app.include_router(checkout_ui_router)
+app.include_router(public_router)
 
 @app.get("/health")
 def health():
     return {"status": "ok", "env": settings.APP_ENV}
+
+# Mount /static only when directory exists (works in dev and docker)
+def _mount_static_if_available() -> None:
+    candidates = [
+        Path("/app/frontend/static"),
+        Path(__file__).resolve().parents[2] / "frontend" / "static",
+    ]
+    for d in candidates:
+        if d.exists():
+            app.mount("/static", StaticFiles(directory=str(d)), name="static")
+            break
+
+_mount_static_if_available()
 
